@@ -2,7 +2,10 @@
 title: "hw01_presentation"
 author: "Arlo"
 date: "9/11/2019"
-output: ioslides_presentation
+output:
+  beamer_presentation: default
+  ioslides_presentation: default
+always_allow_html: yes
 ---
 
 ```{r load packages, message=FALSE, warning=FALSE, include=FALSE}
