@@ -2,11 +2,13 @@
 title: "hw01_gapminder"
 author: "Arlo"
 date: "9/11/2019"
-output: github_document
+output:
+  github_document: default
+  pdf document: default
 theme: cerulean
-toc: true
-toc_float: true
 always_allow_html: yes
+toc: yes
+toc_float: yes
 ---
 
 ```{r load packages, message=FALSE, warning=FALSE, include=FALSE}
