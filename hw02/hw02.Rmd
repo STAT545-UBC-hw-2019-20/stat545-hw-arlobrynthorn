@@ -30,6 +30,10 @@ library(tidyselect)
     filter(year == 1970:1979) %>%
        filter(country == "Comoros" | country == "Eritrea" | country == "France"))
 
+<<<<<<< HEAD
+=======
+datatable(as.tibble(gapminder_subset))
+>>>>>>> bed3636d507b3dcf08332b1b8255503b0efb814b
 ```
 
 ## (1.2)
