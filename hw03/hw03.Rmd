@@ -1,0 +1,102 @@
+---
+title: "hw03"
+author: "Arlo"
+date: "9/26/2019"
+output: 
+  html_document:
+    keep_md: true
+    df_print: paged
+    toc: yes
+    theme: paper
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Assignment 3: dplyr/ggplot Part II
+
+```{r, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(gapminder)
+library(ggridges)
+library(scales)
+```
+
+## Task Option 2: Min/max GDP/capita in each continent
+
+Group data continent then summarize the max and min values based on that grouping.
+=> This tibble shows the minimum and maximum value of gdpPercap of each continent in gapminder. 
+```{r T2: tibble}
+gapminder %>%
+  group_by(continent) %>%
+  summarize(max_GDPpercap = max(gdpPercap), min_GDPpercap = min(gdpPercap)) 
+
+```
+
+
+```{r T2: plot}
+gapminder %>% 
+  group_by(continent) %>%
+  summarize(max_GDPpercap = max(gdpPercap), min_GDPpercap = min(gdpPercap)) %>%
+      ggplot()+
+      geom_point(aes(continent, min_GDPpercap, colour = "blue", alpha = 0.5, size = 2))+
+      geom_point(aes(continent, max_GDPpercap, colour = "red", alpha = 0.5, size = 2)) +
+      scale_colour_discrete("Gdp per capita", labels = c("Minimum", "Maximum")) +
+        ylab("GDP per capita")
+      
+```
+
+```{r }
+gapminder %>% 
+  group_by(continent) %>%
+  summarize(max_GDPpercap = max(gdpPercap), min_GDPpercap = min(gdpPercap)) %>%
+      ggplot()+
+      geom_pointrange(aes(ymin = min_GDPpercap, ymax = max_GDPpercap, fill = "dark blue", alpha = 0.5))
+      
+```
+
+## Task Option 5
+
+```{r}
+gapminder %>%
+  select (continent, year, lifeExp) %>%
+  group_by (continent, year) %>%
+  arrange (continent, year) %>%
+  summarize(ave_lifeEXp = mean(lifeExp))
+
+```
+
+
+WHY IS MY FIG WIDTH NOT WORKING?!
+
+```{r t5 plot, fig.width = 18,  fig.height = 6}}
+gapminder %>% 
+  ggplot(aes(year, lifeExp, group = continent, colour = continent)) +
+  geom_path(size = 2, alpha = 1/3) +
+  facet_wrap(~ continent, nrow = 1, scales = "free") +
+  scale_colour_discrete("Continents", labels = c(country_codes)) +
+  geom_smooth(method = "lm") +
+  theme_bw()
+
+```
+
+
+## Task Option 6
+
+```{r}
+gapminder%>%
+  filter(country == "Rwanda") %>%
+    mutate(lifeExp_inc= lifeExp - lag(lifeExp)) %>%
+    mutate(GDP = gdpPercap*pop) %>%
+    arrange(year)
+```
+
+
+```{r}
+gapminder%>%
+  filter(country == "Rwanda") %>%
+    ggplot(GDP = gdpPercap*pop, lifeExp_inc = lifeExp - lag(lifeExp))
+      geom_point()
+```
+
