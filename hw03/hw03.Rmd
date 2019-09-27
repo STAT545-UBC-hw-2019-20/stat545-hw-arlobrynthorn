@@ -42,8 +42,11 @@ gapminder %>%
       ggplot()+
       geom_point(aes(continent, min_GDPpercap, colour = "blue", alpha = 0.5, size = 2))+
       geom_point(aes(continent, max_GDPpercap, colour = "red", alpha = 0.5, size = 2)) +
-      scale_colour_discrete("Gdp per capita", labels = c("Minimum", "Maximum")) +
-        ylab("GDP per capita")
+        ylab("GDP per capita") +
+        scale_alpha("", labels = "") +
+        scale_size("", labels = "") +
+         scale_colour_discrete("Gdp per capita", labels = c("Minimum", "Maximum")) 
+
       
 ```
 
@@ -85,18 +88,17 @@ gapminder %>%
 ## Task Option 6
 
 ```{r}
-gapminder%>%
+(Rwanda <- gapminder%>%
   filter(country == "Rwanda") %>%
     mutate(lifeExp_inc= lifeExp - lag(lifeExp)) %>%
     mutate(GDP = gdpPercap*pop) %>%
-    arrange(year)
+    arrange(year)) 
 ```
 
 
 ```{r}
-gapminder%>%
-  filter(country == "Rwanda") %>%
-    ggplot(GDP = gdpPercap*pop, lifeExp_inc = lifeExp - lag(lifeExp))
+Rwanda %>%
+  ggplot(aes(GDP, lifeExp_inc)) +
       geom_point()
 ```
 
