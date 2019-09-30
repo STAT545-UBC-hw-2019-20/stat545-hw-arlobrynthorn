@@ -2,12 +2,14 @@
 title: "hw03"
 author: "Arlo"
 date: "9/26/2019"
-output: 
+output:
   html_document:
-    keep_md: true
     df_print: paged
-    toc: yes
+    keep_md: yes
     theme: paper
+    toc: yes
+  pdf_document:
+    toc: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -16,6 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Assignment 3: dplyr/ggplot Part II
 
+Load packages used in exercise
 ```{r, message = FALSE, warning = FALSE}
 library(tidyverse)
 library(gapminder)
@@ -34,34 +37,27 @@ gapminder %>%
 
 ```
 
-
+Graph each continent's min and max values for GDP over time. Achieve this through combining two geom_point() plots together, where one displays minimum values, and one displays maximum values. Relabel y axis for more clear interpretation. Identify labels for each class to supress unneeded information, and ensure effectice interpretation of data points.
 ```{r T2: plot}
 gapminder %>% 
   group_by(continent) %>%
   summarize(max_GDPpercap = max(gdpPercap), min_GDPpercap = min(gdpPercap)) %>%
       ggplot()+
-      geom_point(aes(continent, min_GDPpercap, colour = "blue", alpha = 0.5, size = 2))+
-      geom_point(aes(continent, max_GDPpercap, colour = "red", alpha = 0.5, size = 2)) +
+      geom_point(aes(continent, max_GDPpercap, colour = "blue", alpha = 0.5, size = 2)) +
+      geom_point(aes(continent, min_GDPpercap, colour = "red", alpha = 0.5, size = 2))+
         ylab("GDP per capita") +
         scale_alpha("", labels = "") +
         scale_size("", labels = "") +
-         scale_colour_discrete("Gdp per capita", labels = c("Minimum", "Maximum")) 
+         scale_colour_discrete("Gdp per capita", labels = c("Maximum", "Minimum")) 
 
       
 ```
 
-```{r }
-gapminder %>% 
-  group_by(continent) %>%
-  summarize(max_GDPpercap = max(gdpPercap), min_GDPpercap = min(gdpPercap)) %>%
-      ggplot()+
-      geom_pointrange(aes(ymin = min_GDPpercap, ymax = max_GDPpercap, fill = "dark blue", alpha = 0.5))
-      
-```
 
+Filter through tha gapminder data, and group together continents and years, allowing functions to be run individually to each group of continent, for each year. This allows the analysis of average life expectancy values for each continent over time, by grouping all countries' data together that are within the same continent, then grouping each of those data by year as well. 
 ## Task Option 5
 
-```{r}
+```{r T5: tibble}
 gapminder %>%
   select (continent, year, lifeExp) %>%
   group_by (continent, year) %>%
@@ -71,9 +67,9 @@ gapminder %>%
 ```
 
 
-WHY IS MY FIG WIDTH NOT WORKING?!
+Plot each dataframe, isolating each continent so that average life expectancy values can be observed over time, then compared easily between continents. Allowing all data to be shown in the graph ensures the reader the confidence for using a line of best-fit, which clearly demonstrates the coarse scale changes of lifeExp over time for each continent. 
 
-```{r t5 plot, fig.width = 18,  fig.height = 6}}
+```{r T5 plot:, fig.width = 18,  fig.height = 6}
 gapminder %>% 
   ggplot(aes(year, lifeExp, group = continent, colour = continent)) +
   geom_path(size = 2, alpha = 1/3) +
@@ -85,9 +81,11 @@ gapminder %>%
 ```
 
 
+Having seen the unique gdpPercap data in class demonstration, I chose to select only Rewanda's data for furthur investigation. I chose to identify the increase in life expectancy for each year; and to use gross GDP instead of gdpPercap, in order to establish a relationship between GDP and life expectancy over time. 
+
 ## Task Option 6
 
-```{r}
+```{r T6: tibble}
 (Rwanda <- gapminder%>%
   filter(country == "Rwanda") %>%
     mutate(lifeExp_inc= lifeExp - lag(lifeExp)) %>%
@@ -95,10 +93,12 @@ gapminder %>%
     arrange(year)) 
 ```
 
-
-```{r}
+A graph showing the anomalies of GDP vs change in life expectancy for Rwanda over time. Including year labels allows reader to read the data over a time scale, despite the axes' independance to time. 
+```{r T6: plot}
 Rwanda %>%
   ggplot(aes(GDP, lifeExp_inc)) +
-      geom_point()
+      geom_point() +
+  scale_x_log10(labels = scales::comma_format()) +
+  geom_text(aes(label=year),hjust=0, vjust=1)
 ```
 
