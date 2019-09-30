@@ -19,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # Assignment 3: dplyr/ggplot Part II
 
 Load packages used in exercise
-```{r, message = FALSE, warning = FALSE}
+```{r, message = FALSE, warning = FALSE, echo = TRUE}
 library(tidyverse)
 library(gapminder)
 library(ggridges)
@@ -28,15 +28,19 @@ library(scales)
 
 ## Task Option 2: Min/max GDP/capita in each continent
 
+### Gdp/capita range per continent - tibble
+
 Group data continent then summarize the max and min values based on that grouping.
 => This tibble shows the minimum and maximum value of gdpPercap of each continent in gapminder. 
+
 ```{r T2: tibble}
 gapminder %>%
   group_by(continent) %>%
   summarize(max_GDPpercap = max(gdpPercap), min_GDPpercap = min(gdpPercap)) 
-
 ```
+*****
 
+### Gdp/capita range per continent - plot
 Graph each continent's min and max values for GDP over time. Achieve this through combining two geom_point() plots together, where one displays minimum values, and one displays maximum values. Relabel y axis for more clear interpretation. Identify labels for each class to supress unneeded information, and ensure effectice interpretation of data points.
 ```{r T2: plot}
 gapminder %>% 
@@ -53,9 +57,13 @@ gapminder %>%
       
 ```
 
+*****
+
+## Task Option 5
+
+### Life expectancy over time for all continents - tibble
 
 Filter through tha gapminder data, and group together continents and years, allowing functions to be run individually to each group of continent, for each year. This allows the analysis of average life expectancy values for each continent over time, by grouping all countries' data together that are within the same continent, then grouping each of those data by year as well. 
-## Task Option 5
 
 ```{r T5: tibble}
 gapminder %>%
@@ -66,6 +74,9 @@ gapminder %>%
 
 ```
 
+*****
+
+### Life expectancy over time for all continents - plot
 
 Plot each dataframe, isolating each continent so that average life expectancy values can be observed over time, then compared easily between continents. Allowing all data to be shown in the graph ensures the reader the confidence for using a line of best-fit, which clearly demonstrates the coarse scale changes of lifeExp over time for each continent. 
 
@@ -80,21 +91,26 @@ gapminder %>%
 
 ```
 
+*****
+## Task option 6: Analyze Rwanda GDP relative to life expectancy
+
+### Rwanda GDP vs life expectancy - tibble
 
 Having seen the unique gdpPercap data in class demonstration, I chose to select only Rewanda's data for furthur investigation. I chose to identify the increase in life expectancy for each year; and to use gross GDP instead of gdpPercap, in order to establish a relationship between GDP and life expectancy over time. 
-
-## Task Option 6
 
 ```{r T6: tibble}
 (Rwanda <- gapminder%>%
   filter(country == "Rwanda") %>%
     mutate(lifeExp_inc= lifeExp - lag(lifeExp)) %>%
     mutate(GDP = gdpPercap*pop) %>%
-    arrange(year)) 
+    arrange(year))
 ```
 
+*****
+
+### Rwanda GDP vs life expectancy - plot
 A graph showing the anomalies of GDP vs change in life expectancy for Rwanda over time. Including year labels allows reader to read the data over a time scale, despite the axes' independance to time. 
-```{r T6: plot}
+```{r T6: plot, warning = FALSE}
 Rwanda %>%
   ggplot(aes(GDP, lifeExp_inc)) +
       geom_point() +
