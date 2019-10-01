@@ -1,7 +1,6 @@
 ---
 title: "hw02"
 author: "Arlo"
-date: "9/20/2019"
 html_document:
     keep_md: true
 ---
