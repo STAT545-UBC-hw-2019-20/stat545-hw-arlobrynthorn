@@ -1,8 +1,8 @@
 ---
 title: "hw02"
 author: "Arlo"
-html_document:
-    keep_md: true
+output:
+  html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = F)
 ```
 
 
-```{r load packages, warning =FALSE, message=FALSE}
+```{r load_packages, warning =FALSE, message=FALSE}
 library(gapminder)
 library(dplyr)
 library(tidyverse)
@@ -24,7 +24,7 @@ library(tidyselect)
 # Excercise(s) 1
 
 ## (1.1)
-```{r Exercise 1.1}
+```{r Exercise_1_1}
 (gapminder_subset <- gapminder %>%
     filter(year == 1970:1979) %>%
        filter(country == "Comoros" | country == "Eritrea" | country == "France"))
@@ -32,7 +32,7 @@ library(tidyselect)
 
 ## (1.2)
 
-```{r Ex. 1.2}
+```{r Ex_1_2}
   gapminder_subset %>%
     select(gdpPercap, country)
 
@@ -40,7 +40,7 @@ library(tidyselect)
 
 ## (1.3)
 
-```{r Ex. 1.3}
+```{r Ex_1_3}
 gapminder %>%
   arrange(country, year) %>%
   group_by(country) %>%
@@ -51,7 +51,7 @@ gapminder %>%
 
 ## (1.4)
 
-```{r Ex. 1.4}
+```{r Ex_1_4}
 gapminder %>%
   group_by(country) %>%
   summarize(gdpPercap_max = max(gdpPercap))
@@ -59,7 +59,7 @@ gapminder %>%
 
 ## (1.5)
 
-```{r Ex. 1.5}
+```{r Ex_1_5}
 gapminder %>%
   filter(country == "Canada") %>%
     ggplot(aes(gdpPercap, lifeExp)) +
@@ -73,11 +73,11 @@ gapminder %>%
 
 # Exercise 2
 
-```{r Exercise 2 (setup)}
+```{r Exercise_2_setup}
 (gapminder_2 <-select(gapminder, country, pop))
 ```
 
-```{r 2: Quantitative dplyr exploration}
+```{r 2_Quantitative_dplyr_exploration}
  gapminder_2 %>%
   group_by(country) %>%
   summarize(Pop_min = min(pop), Pop_max = max(pop), Pop_mean = mean(pop), Pop_std_dev = sd(pop)) %>%
@@ -90,7 +90,7 @@ gapminder %>%
 
 
 
-```{r 2: Categorical dplyr exploration}
+```{r 2_Categorical_dplyr_exploration}
 gapminder %>%
   group_by(continent) %>%
   summarize(Countries=n()) %>%
@@ -104,18 +104,18 @@ ggplot(aes(continent, Countries)) +
 
 # Exercise 3
 
-```{r Exercise 3 (setup)}
+```{r Exercise_3_setup}
 trees
 datatable(as.tibble(trees))
 ```
 
-```{r 3: Trees scatter}
+```{r Treesscatter}
  ggplot(trees, aes(Girth, Volume)) +
     geom_point(colour = "dark green", alpha = 0.5) +
     theme_classic()
 ```
 
-```{r 3: Diameter class dist.}
+```{r 3_Diameter_class_dist}
 trees %>% 
   ggplot(aes(Girth)) +
   geom_histogram(binwidth = 2
