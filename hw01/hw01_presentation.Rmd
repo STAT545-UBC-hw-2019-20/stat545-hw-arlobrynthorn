@@ -1,7 +1,6 @@
 ---
 title: "hw01_presentation"
 author: "Arlo"
-date: "9/11/2019"
 output:
   beamer_presentation: default
   ioslides_presentation: default

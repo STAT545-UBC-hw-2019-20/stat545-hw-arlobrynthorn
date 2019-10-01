@@ -1,7 +1,6 @@
 ---
 title: "hw01_gapminder"
 author: "Arlo"
-date: "9/11/2019"
 output:
   github_document: default
   pdf document: default

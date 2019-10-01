@@ -1,15 +1,8 @@
 ---
 title: "hw03"
 author: "Arlo"
-date: "9/26/2019"
 output:
-  html_document:
-    df_print: paged
-    keep_md: yes
-    theme: paper
-    toc: yes
-  pdf_document:
-    toc: yes
+  html_document
 ---
 
 ```{r setup, include=FALSE}
