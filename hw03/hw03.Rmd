@@ -1,7 +1,6 @@
 ---
 title: "hw03"
 author: "Arlo"
-date: "9/26/2019"
 output:
   html_document:
     df_print: paged
