@@ -40,13 +40,13 @@ gapminder %>%
   group_by(continent) %>%
   summarize(max_GDPpercap = max(gdpPercap), min_GDPpercap = min(gdpPercap)) %>%
       ggplot()+
-      geom_point(aes(continent, max_GDPpercap, colour = "blue", alpha = 0.5, size = 2)) +
-      geom_point(aes(continent, min_GDPpercap, colour = "red", alpha = 0.5, size = 2))+
+      geom_point(aes(continent, max_GDPpercap, colour = "red"), alpha = 0.5, size = 2) +
+      geom_point(aes(continent, min_GDPpercap, colour = "blue"), alpha = 0.5, size = 2)+
         ylab("GDP per capita") +
         scale_alpha("", labels = "") +
         scale_size("", labels = "") +
-         scale_colour_discrete("Gdp per capita", labels = c("Maximum", "Minimum")) 
-
+        scale_colour_manual("Gdp per capita", labels = c("Minimum", "Maximum"), values = c("blue", "red")) +
+        theme_bw()  
       
 ```
 
