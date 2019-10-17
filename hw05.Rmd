@@ -1,0 +1,209 @@
+---
+title: "HW05 arlobrynthorn"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load packages, warning = FALSE, message = FALSE}
+suppressPackageStartupMessages(library(gapminder))
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(here))
+suppressPackageStartupMessages(library(DT))
+suppressPackageStartupMessages(library(forcats))
+suppressPackageStartupMessages(library(tibble))
+suppressPackageStartupMessages(library(readxl))
+suppressPackageStartupMessages(library(plotly))
+suppressPackageStartupMessages(library(gridExtra))
+suppressPackageStartupMessages(library(ggrepel))
+```
+
+## Exercise 1
+
+Using the "here" package creates relative paths that allow for better sharing capability, whereas using the baseR directory path makes the path set to only your working directory on your local drive.The here package does what other packages can do but in a more simple, platform-independant way.The here package also allows for the user to not need to set the working directory, which allows for furthur ease in collabortaion. When using a document on github, this can also be completed using the here package, allowing for the path to be connected to github directly, rather than an absolute path on your harddrive.
+
+
+## Exercise 2
+
+### 2.1 - Drop Oceania
+
+First, I'll explore the factors within the gapminder dataset to see what we're working with.
+```{r}
+gapminder$continent %>%
+  levels()
+
+str(gapminder$continent)
+  
+gapminder %>%
+  DT::datatable()
+
+```
+
+Now we'll drop Oceana as a factor.
+```{r}
+the_north <- c("Africa", "Americas", "Asia", "Europe")
+we_the_north <- gapminder %>%
+  filter(continent %in% the_north)
+```
+
+
+And now I'll re-explore our data.
+```{r}
+we_the_north$continent %>%
+  levels()
+
+str(we_the_north$continent)
+
+```
+
+Since the factors Oceania is still shown, we need to specify to drop the level(factor) that we filtered out.
+```{r}
+we_the_NORTH <- we_the_north %>%
+  droplevels()
+```
+ 
+ 
+And now I'll (re-)re-explore our data.
+```{r}
+we_the_NORTH$continent %>%
+  levels()
+
+str(we_the_NORTH$continent)
+
+```
+
+### 2.2 - Reorder levels
+```{r}
+we_the_NORTH %>%
+  count(continent)
+```
+
+Re-order levels based on ascending # of values from top to bottom of plot
+```{r}
+we_the_NORTH %>%
+  filter (lifeExp > 50) %>%
+  ggplot() +
+   geom_bar(aes(fct_infreq(continent))) +
+  coord_flip() +
+  theme_bw() +
+  labs(y = "# of Observations", x = "Continent", title = "Occurence of lifeExp higher than 50") 
+```
+
+
+## Exercise 3
+
+### 3.1 - Export then import dataset
+```{r}
+new_data <- we_the_NORTH %>%
+  filter (lifeExp > 50)
+
+write_csv(new_data, here::here("new_data.csv"))
+
+new_data2 <- read_csv(here::here("new_data.csv"))
+datatable(new_data2)
+```
+Explore new data, what happened?
+```{r}
+new_data %>%
+  levels()
+
+str(new_data)
+
+new_data2 %>%
+  levels()
+
+str(new_data2)
+
+```
+
+The new data has dropped both country and continent data as factors, and now has them stored as characters. I must re-assign country and continent as factors!
+```{r}
+new_data2$country <- factor(new_data2$country)
+new_data2$continent <- factor(new_data2$continent)
+```
+
+Plot the re-assigned factors in a plot.
+```{r}
+new_data2 %>%
+  ggplot() +
+  geom_bar(aes(fct_rev(continent), colour = continent)) +
+  coord_flip() +
+  theme_bw() +
+  labs(x= "# of Observations", y = "Continent")
+
+```
+
+
+
+Order by population size:
+
+```{r}
+new_countries <- c("Canada", "Albania", "Taiwan")
+new_factor <- new_data2 %>%
+  filter(country %in% new_countries)
+
+new_factor %>%
+  ggplot() +
+  geom_boxplot(aes(x=fct_reorder(country, pop),y=lifeExp, fill = country)) +
+  theme_bw() +
+  labs(x= "Country", y = "Life Expectancy", title = "Countries ordered by decreasing lifeExp")
+```
+
+## Exercise 4
+```{r, first attempt,warning=FALSE}
+(Rwanda <- gapminder%>%
+  filter(country == "Rwanda") %>%
+    mutate(lifeExp_inc= lifeExp - lag(lifeExp)) %>%
+    mutate(GDP = gdpPercap*pop) %>%
+    arrange(year))
+
+Rwanda %>%
+  ggplot(aes(GDP, lifeExp_inc)) +
+      geom_point() +
+  scale_x_log10(labels = scales::comma_format()) +
+  geom_text(aes(label=year),hjust=0, vjust=1)
+```
+
+```{r,fig.width=10, fig.height= 4, fig.fullwidth=TRUE,warning=FALSE}
+#first plot
+plot1 <- (Rwanda %>%
+  ggplot(aes(GDP, lifeExp_inc)) +
+    geom_point() +
+    geom_text(aes(label=year),hjust=0, vjust=0))
+
+
+#better plot
+plot2 <- (Rwanda %>%
+  ggplot(aes(GDP, lifeExp_inc, label= year)) +
+      geom_point() +
+      scale_x_log10(labels = scales::comma_format()) +
+      geom_text_repel() +
+      labs(y= " Change in life expectancy", x = "Gross GDP", title = "Rwandan census and productivity data") +
+      theme_bw())
+
+#put both plots side-by-side
+grid.arrange(plot1, plot2, nrow = 1, top = "Before and After Data Visualization")
+
+
+```
+
+```{r}
+plot3 <- ggplot(Rwanda, aes(x=GDP, y= lifeExp_inc, colour = year)) +
+  geom_point() +
+  labs(title = "Rwandan GDP and change in life expectancy (1957-2007)")
+
+plot3 %>% 
+  ggplotly()
+```
+
+
+##Exercise 5
+
+```{r,warning=FALSE}
+ggsave(filename = "Betterplot", plot = plot2, device = "jpg", path = here::here())
+```
+
